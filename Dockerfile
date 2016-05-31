@@ -1,31 +1,34 @@
 From ringo/scientific:6.5
 
-MAINTAINER Atsushi Chiba (@tboffice)
+MAINTAINER tboffice
+ENV TEXLIVESERVER 172.17.0.1
 
-RUN yum install -y yum-fastestmirror
-RUN yum update -y
-RUN yum -y install wget patch git vim-enhanced gcc openssl-devel python-devel libffi-devel python-imaging ipa-gothic-fonts libjpeg-turbo-devel ipa-pgothic-fonts ghostscript 
-RUN curl https://bootstrap.pypa.io/get-pip.py | python
-RUN pip install --upgrade ndg-httpsclient
+RUN yum install -y yum-fastestmirror && \
+    yum update -y && \
+    yum -y install wget patch git vim-enhanced gcc openssl-devel python-devel libffi-devel python-imaging ipa-gothic-fonts libjpeg-turbo-devel ipa-pgothic-fonts ghostscript && \
+    yum clean all
+RUN curl https://bootstrap.pypa.io/get-pip.py | python && \
+    pip install --upgrade ndg-httpsclient
 
 # TeX Live 2015
-RUN cd /tmp
-RUN wget -r http://172.17.0.1:8000/tlpkg/; mv 172.17.0.1\:8000/tlpkg/ .
-RUN wget -r http://172.17.0.1:8000/archive/; mv 172.17.0.1\:8000/archive/ .
-RUN wget 172.17.0.1:8000/install-tl
-RUN chmod +x install-tl
-RUN ./install-tl -profile tlpkg/texlive.tlpdb
-RUN echo "PATH=$PATH:/usr/local/texlive/2015/bin/x86_64-linux" > /etc/profile.d/texlive.sh
-RUN chmod +x /etc/profile.d/texlive.sh
-RUN pip install sphinxcontrib-blockdiag
-RUN pip install sphinx==1.3.6
+RUN cd /tmp && \
+    wget -r http://${TEXLIVESERVER}:8000/tlpkg/; mv ${TEXLIVESERVER}\:8000/tlpkg/ . && \
+    wget -r http://${TEXLIVESERVER}:8000/archive/; mv ${TEXLIVESERVER}\:8000/archive/ . && \
+    wget ${TEXLIVESERVER}:8000/install-tl && \
+    rm -rf ${TEXLIVESERVER}\:8000 && \
+    chmod +x install-tl && \
+    ./install-tl -profile tlpkg/texlive.tlpdb && \
+    echo "PATH=$PATH:/usr/local/texlive/2015/bin/x86_64-linux" > /etc/profile.d/texlive.sh && \
+    chmod +x /etc/profile.d/texlive.sh
+RUN pip install sphinxcontrib-blockdiag && \
+    pip install sphinx==1.3.6
 RUN source /etc/profile; kanji-config-updmap-sys ipaex
-RUN rm -rf 172.17.0.1\:8000
 
 # jenkins
-RUN wget -O /etc/yum.repos.d/jenkins.repo http://pkg.jenkins-ci.org/redhat-stable/jenkins.repo
-RUN rpm --import https://jenkins-ci.org/redhat/jenkins-ci.org.key
-RUN yum install -y jenkins java-1.8.0-openjdk
+RUN wget -O /etc/yum.repos.d/jenkins.repo http://pkg.jenkins-ci.org/redhat-stable/jenkins.repo && \
+    rpm --import https://jenkins-ci.org/redhat/jenkins-ci.org.key && \
+    yum install -y jenkins java-1.8.0-openjdk && \
+    yum clean all
 
 # Add Tini
 ENV TINI_VERSION v0.9.0
