@@ -27,7 +27,7 @@ RUN source /etc/profile; kanji-config-updmap-sys ipaex
 # jenkins
 RUN wget -O /etc/yum.repos.d/jenkins.repo http://pkg.jenkins-ci.org/redhat-stable/jenkins.repo && \
     rpm --import https://jenkins-ci.org/redhat/jenkins-ci.org.key && \
-    yum install -y jenkins java-1.8.0-openjdk && \
+    yum install -y jenkins java-1.8.0-openjdk unzip && \
     yum clean all
 
 # Add Tini
@@ -45,3 +45,8 @@ COPY jenkins.sh /usr/local/bin/jenkins.sh
 RUN chmod +x /usr/local/bin/jenkins.sh
 ENTRYPOINT ["/bin/tini", "--", "/usr/local/bin/jenkins.sh"]
 
+# install jenkins plugin
+COPY plugins.txt /plugins.txt
+COPY plugins.sh /usr/local/bin/plugins.sh
+RUN chmod +x /usr/local/bin/plugins.sh
+RUN /usr/local/bin/plugins.sh /plugins.txt 
