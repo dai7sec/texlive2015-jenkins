@@ -15,7 +15,7 @@
 ## prepare
 
 ```
-yum install -y docker
+yum install -y docker git vim-enhanced
 systemctl start docker
 # wget http://download.nus.edu.sg/mirror/ctan/systems/texlive/Images/texlive2015-20150523.iso # singapore
 wget http://ftp.riken.jp/tex-archive/systems/texlive/Images/texlive2015-20150523.iso # Japan
