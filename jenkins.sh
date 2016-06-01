@@ -27,7 +27,7 @@ export -f copy_reference_file
 touch "${COPY_REFERENCE_FILE_LOG}" || (echo "Can not write to ${COPY_REFERENCE_FILE_LOG}. Wrong volume permissions?" && exit 1)
 echo "--- Copying files at $(date)" >> "$COPY_REFERENCE_FILE_LOG"
 find /usr/share/jenkins/ref/ -type f -exec bash -c "copy_reference_file '{}'" \;
-
+PATH=${PATH}:/usr/local/texlive/2015/bin/x86_64-linux
 # if `docker run` first argument start with `--` the user is passing jenkins launcher arguments
 if [[ $# -lt 1 ]] || [[ "$1" == "--"* ]]; then
   eval "exec java $JAVA_OPTS -jar /usr/lib/jenkins/jenkins.war $JENKINS_OPTS \"\$@\""
