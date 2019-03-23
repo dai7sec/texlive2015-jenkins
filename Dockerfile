@@ -1,4 +1,4 @@
-From ringo/scientific:6.5
+From ringo/scientific:7.2
 
 MAINTAINER tboffice
 ENV TEXLIVESERVER 172.17.0.1
